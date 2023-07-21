@@ -11,6 +11,11 @@
 # Please have a look to http://docs.gravitee.io/ for more options and fine-grained granularity
 ############################################################################################################
 
+secrets:
+  kubernetes:
+    enabled: true
+    # kubeConfigFile: /opt/gravitee/config/kube-config.json
+
 # Gateway HTTP server
 #http:
 #  port: 8092
@@ -80,7 +85,7 @@ management:
   type: mongodb                  # repository type
   mongodb:                       # mongodb repository
 #    prefix:                      # collections prefix
-    dbname: ${ds.mongodb.dbname} # mongodb name (default gravitee)
+    dbname: secret://kubernetes/default/mongo/dbname # mongodb name (default gravitee) TODO test with placeholders
     host: ${ds.mongodb.host}     # mongodb host (default localhost)
     port: ${ds.mongodb.port}     # mongodb port (default 27017)
 

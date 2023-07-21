@@ -610,6 +610,13 @@
             <type>zip</type>
             <scope>runtime</scope>
         </dependency>
+        <dependency>
+            <groupId>io.gravitee.node</groupId>
+            <artifactId>gravitee-node-secrets-plugin-kubernetes</artifactId>
+            <version>4.0.0</version>
+            <type>zip</type>
+            <scope>runtime</scope>
+        </dependency>
 
         <!-- Tracers -->
         <dependency>
