@@ -11,10 +11,55 @@
 # Please have a look to http://docs.gravitee.io/ for more options and fine-grained granularity
 ############################################################################################################
 
+# Secret managers config in order to use secret://<manager>/<secret-path>?option=value& etc... syntax
 secrets:
   kubernetes:
-    enabled: true
+    enabled: false
     # kubeConfigFile: /opt/gravitee/config/kube-config.json
+  vault:
+    enabled: false
+    host: 127.0.0.1
+    port: 8200
+    # nameSpace: default
+    # kvEngine: V2                          # defaults to v2 can be "v1", no mixing supported
+    # readTimeoutSec: 2
+    # connectTimeoutSec: 3
+    ssl:
+      enabled: false                        # not for production
+      # format: "pemfile"                   # one of "pem","pemfile" "keystore", "truststore"
+      # pem:                                # pem in base64 with headers value
+      # file: /opt/gravitee/vault.pem       # also used for keystore and truststore files
+      # password:                           # for key store, otherwise ignored
+      # mTLS:
+        # enabled: false
+        # format: pemfile                    # can also be 'pem' to inline the cert (same as bove)
+        # cert:                              # filename or inline cert
+        # key:                               # filename or inline private key
+    auth:
+      method: token # one of "token", "github", "userpass", "approle"
+    ### github config
+      config:
+        token:
+    ### github config
+        # token:
+        # path: <non standard github path>
+    ### userpass config
+        # username:
+        # password:
+        # path: <non standard github path>
+    ### approle
+        # roleId:
+        # secretId:
+    # RECOMMENDED but works without
+    # for both watch and read
+    retry:
+      attempts: 2          # set '0' to disable
+      intervalMs: 1000
+    # if false an error will be displayed at load time it will start up anyway
+    watch:
+      enabled: true
+      pollIntervalSec: 30
+
 
 # Gateway HTTP server
 #http:
@@ -85,7 +130,7 @@ management:
   type: mongodb                  # repository type
   mongodb:                       # mongodb repository
 #    prefix:                      # collections prefix
-    dbname: secret://kubernetes/default/mongo/dbname # mongodb name (default gravitee) TODO test with placeholders
+    dbname: ${ds.mongodb.dbname} # mongodb name (default gravitee)
     host: ${ds.mongodb.host}     # mongodb host (default localhost)
     port: ${ds.mongodb.port}     # mongodb port (default 27017)
 
@@ -431,7 +476,7 @@ services:
 # Referenced properties
 ds:
   mongodb:
-    dbname: gravitee
+    dbname: secret://vault/secret/gravitee/mongo/dbname
     host: localhost
     port: 27017
   elastic:
