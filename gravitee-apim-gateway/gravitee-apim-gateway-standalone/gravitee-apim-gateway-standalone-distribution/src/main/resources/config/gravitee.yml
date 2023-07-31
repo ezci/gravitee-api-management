@@ -13,6 +13,7 @@
 
 # Secret managers config in order to use secret://<manager>/<secret-path>?option=value& etc... syntax
 secrets:
+  # loadFirst: kubernetes # if ever we want to store creds into another secret provider
   kubernetes:
     enabled: false
     # kubeConfigFile: /opt/gravitee/config/kube-config.json
