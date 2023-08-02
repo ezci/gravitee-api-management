@@ -1,3 +1,5 @@
+// @ts-ignore
+
 /*
  * Copyright (C) 2015 The Gravitee team (http://gravitee.io)
  *
@@ -18,10 +20,12 @@ import {
   ApiType,
   CreateApiV4,
   DefinitionVersion,
+  EndpointGroupV4,
   FlowExecution,
   FlowMode,
   HttpListener,
   SubscriptionListener,
+  FlowV4,
 } from '../../management-v2-webclient-sdk/src/lib';
 
 export class MAPIV2ApisFaker {
@@ -71,9 +75,9 @@ export class MAPIV2ApisFaker {
     return {
       // @ts-ignore
       type: 'HTTP',
-      paths: [],
+      paths: [{ path: `/${faker.random.word()}-${faker.datatype.uuid()}-${Math.floor(Date.now() / 1000)}` }],
       pathMappings: [],
-      entrypoints: [],
+      entrypoints: [{ type: 'http-proxy' }],
       ...attributes,
     };
   }
@@ -83,6 +87,62 @@ export class MAPIV2ApisFaker {
       // @ts-ignore
       type: 'SUBSCRIPTION',
       entrypoints: [],
+      ...attributes,
+    };
+  }
+
+  static newHttpEndpointGroup(attributes?: Partial<EndpointGroupV4>): EndpointGroupV4 {
+    return {
+      name: 'Default HTTP proxy group',
+      type: 'http-proxy',
+      loadBalancer: {
+        type: 'ROUND_ROBIN',
+      },
+      endpoints: [
+        {
+          name: 'Default HTTP proxy',
+          type: 'http-proxy',
+          configuration: {
+            target: `${Cypress.env('wiremockUrl')}/hello`,
+          },
+        },
+      ],
+      ...attributes,
+    };
+  }
+
+  static newFlow(attributes?: Partial<FlowV4>): FlowV4 {
+    return {
+      enabled: true,
+      selectors: [
+        {
+          type: 'HTTP',
+          path: '/',
+          pathOperator: 'EQUALS',
+          methods: [],
+        },
+      ],
+      request: [
+        {
+          name: 'Rate limit1',
+          enabled: true,
+          policy: 'rate-limit',
+          configuration: {
+            async: false,
+            addHeaders: false,
+            rate: {
+              periodTime: 5,
+              limit: 1,
+              periodTimeUnit: 'SECONDS',
+              key: '',
+            },
+          },
+        },
+      ],
+      response: [],
+      subscribe: [],
+      publish: [],
+      tags: [],
       ...attributes,
     };
   }

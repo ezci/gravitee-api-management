@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import faker from '@faker-js/faker';
-import { PlanValidation, PlanSecurityType, CreatePlanV4, PlanMode, CreatePlan } from '../../management-v2-webclient-sdk/src/lib';
+import { PlanValidation, PlanSecurityType, CreatePlanV4, PlanMode, CreatePlan, FlowV4 } from '../../management-v2-webclient-sdk/src/lib';
 
 export class MAPIV2PlansFaker {
   static newPlanV4(attributes?: Partial<CreatePlan>): CreatePlan {
@@ -31,6 +31,40 @@ export class MAPIV2PlansFaker {
       order: 1,
       characteristics: [],
       flows: [],
+      ...attributes,
+    };
+  }
+
+  static newFlowV4(attributes?: Partial<FlowV4>): FlowV4 {
+    const name = faker.commerce.productName();
+
+    return {
+      name,
+      enabled: true,
+      selectors: [
+        {
+          type: 'HTTP',
+          path: '/',
+          pathOperator: 'STARTS_WITH',
+        },
+      ],
+      request: [
+        {
+          name: 'Rate Limiting',
+          enabled: true,
+          policy: 'rate-limit',
+          configuration: {
+            async: false,
+            addHeaders: false,
+            rate: {
+              periodTime: 4,
+              limit: 1,
+              periodTimeUnit: 'SECONDS',
+              key: '',
+            },
+          },
+        },
+      ],
       ...attributes,
     };
   }
