@@ -11,9 +11,9 @@
 # Please have a look to http://docs.gravitee.io/ for more options and fine-grained granularity
 ############################################################################################################
 
-# Secret managers config in order to use secret://<manager>/<secret-path>?option=value& etc... syntax
+# Secret managers config in order to use secret://<manager>/<secret-path>[/key]?namespace=<name>&option=value... syntax
 secrets:
-  # loadFirst: kubernetes # if ever we want to store creds into another secret provider
+  # loadFirst: kubernetes # if ever we want to store creds for another secret provider (e.g. store TLS information for VAULT in k8s)
   kubernetes:
     enabled: false
     # kubeConfigFile: /opt/gravitee/config/kube-config.json
@@ -21,7 +21,7 @@ secrets:
     enabled: false
     host: 127.0.0.1
     port: 8200
-    # nameSpace: default
+    # namespace: default
     # kvEngine: V2                          # defaults to v2 can be "v1", no mixing supported
     # readTimeoutSec: 2
     # connectTimeoutSec: 3
