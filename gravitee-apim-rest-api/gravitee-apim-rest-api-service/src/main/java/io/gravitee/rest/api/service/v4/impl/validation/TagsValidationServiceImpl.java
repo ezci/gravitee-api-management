@@ -95,7 +95,7 @@ public class TagsValidationServiceImpl extends AbstractService implements TagsVa
 
     @Override
     public void validatePlanTagsAgainstApiTags(Set<String> planTags, Set<String> apiTags) {
-        if (!isEmpty(planTags) && (isEmpty(apiTags) || !apiTags.stream().anyMatch(apiTag -> planTags.contains(apiTag)))) {
+        if (!isEmpty(planTags) && !apiTags.containsAll(planTags)) {
             log.debug("Plan rejected, tags {} mismatch the tags defined by the API ({})", planTags, apiTags);
             throw new TagNotAllowedException(planTags.toArray(new String[planTags.size()]));
         }

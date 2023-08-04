@@ -129,14 +129,8 @@ import io.gravitee.rest.api.service.v4.validation.CorsValidationService;
 import io.gravitee.rest.api.service.v4.validation.TagsValidationService;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -1373,6 +1367,126 @@ public class ApiService_UpdateTest {
         when(apiRepository.findById(API_ID)).thenReturn(Optional.of(apiEntityToUpdate));
 
         apiService.updateFromSwagger(GraviteeContext.getExecutionContext(), API_ID, null, null);
+    }
+
+    @Test
+    public void should_change_plan_tags_if_check_plans_false() throws TechnicalException {
+        prepareUpdate();
+
+        updateApiEntity.setTags(singleton("public"));
+
+        PlanEntity originalPlan = new PlanEntity();
+        originalPlan.setId("Plan");
+        originalPlan.setStatus(PlanStatus.PUBLISHED);
+        Set<String> originalPlanTags = new HashSet<>();
+        originalPlanTags.add("private");
+        originalPlanTags.add("public");
+        originalPlan.setTags(originalPlanTags);
+        when(planService.findByApi(any(), eq(API_ID))).thenReturn(Set.of(originalPlan));
+        when(tagService.findByUser(any(), any(), any())).thenReturn(Set.of("public", "private"));
+        api.setDefinition(
+                "{\"id\": \"" + API_ID + "\", \"gravitee\": \"2.0.0\", \"tags\": [\"public\", \"private\"], \"name\": \"" + API_NAME + "\",\"proxy\": {\"context_path\": \"/old\"}}"
+        );
+
+        ApiEntity result = apiService.update(GraviteeContext.getExecutionContext(), API_ID, updateApiEntity, false);
+        PlanEntity resultPlan = result.getPlans().stream().toList().get(0);
+        assertEquals(Set.of("public"), resultPlan.getTags());
+
+        verify(apiRepository, times(1)).update(any());
+    }
+
+    @Test
+    public void should_update_api_when_non_synchro_tags_and_no_plan_check() throws TechnicalException {
+        prepareUpdate();
+
+        updateApiEntity.setTags(singleton("public"));
+
+        PlanEntity originalPlan = new PlanEntity();
+        originalPlan.setId("Plan");
+        originalPlan.setStatus(PlanStatus.PUBLISHED);
+        Set<String> originalPlanTags = new HashSet<>();
+        originalPlanTags.add("private");
+        originalPlanTags.add("public");
+        originalPlan.setTags(originalPlanTags);
+        when(planService.findByApi(any(), eq(API_ID))).thenReturn(Set.of(originalPlan));
+
+        api.setDefinition(
+                "{\"id\": \"" + API_ID + "\", \"gravitee\": \"2.0.0\", \"name\": \"" + API_NAME + "\",\"proxy\": {\"context_path\": \"/old\"}}"
+        );
+        when(tagService.findByUser(any(), any(), any())).thenReturn(Sets.newSet("public", "private"));
+
+        ApiEntity result = apiService.update(GraviteeContext.getExecutionContext(), API_ID, updateApiEntity, false, false);
+        PlanEntity resultPlan = result.getPlans().stream().toList().get(0);
+        assertEquals(Set.of("public", "private"), resultPlan.getTags());
+
+        verify(apiRepository, times(1)).update(any());
+    }
+
+    @Test
+    public void should_add_plans_to_change_if_check_plans_false() throws TechnicalException {
+        prepareUpdate();
+
+        updateApiEntity.setTags(singleton("public"));
+        PlanEntity updatePlan = new PlanEntity();
+        updatePlan.setId("Plan");
+        updatePlan.setStatus(PlanStatus.PUBLISHED);
+        Set<String> tags = new HashSet<>();
+        tags.add("public");
+        tags.add("nope");
+        updatePlan.setTags(tags);
+        PlanEntity updatePlan2 = new PlanEntity();
+        updatePlan2.setId("Plan-2");
+        updatePlan2.setStatus(PlanStatus.CLOSED);
+        Set<String> tags2 = new HashSet<>();
+        tags2.add("nope");
+        updatePlan2.setTags(tags2);
+        updateApiEntity.setPlans(Set.of(updatePlan, updatePlan2));
+
+        PlanEntity originalPlan = new PlanEntity();
+        originalPlan.setId("Plan");
+        originalPlan.setStatus(PlanStatus.PUBLISHED);
+        Set<String> originalPlanTags = new HashSet<>();
+        originalPlanTags.add("private");
+        originalPlanTags.add("public");
+        originalPlan.setTags(originalPlanTags);
+        when(planService.findByApi(any(), eq(API_ID))).thenReturn(Set.of(originalPlan));
+        when(tagService.findByUser(any(), any(), any())).thenReturn(Sets.newSet("public", "private", "nope"));
+
+        api.setDefinition(
+                "{\"id\": \"" + API_ID + "\", \"tags\": [\"private\", \"public\"], \"gravitee\": \"2.0.0\", \"name\": \"" + API_NAME + "\",\"proxy\": {\"context_path\": \"/old\"}}"
+        );
+
+        ApiEntity result = apiService.update(GraviteeContext.getExecutionContext(), API_ID, updateApiEntity, false);
+        assertNotNull(result);
+
+        verify(apiRepository, times(1)).update(any());
+        verify(planService, times(2)).createOrUpdatePlan(any(), any());
+
+    }
+
+    @Test
+    public void should_not_change_plan_tags_if_check_plans_false_and_tags_are_unchanged() throws TechnicalException {
+        prepareUpdate();
+
+        updateApiEntity.setTags(singleton("public"));
+
+        PlanEntity originalPlan = new PlanEntity();
+        originalPlan.setId("Plan");
+        originalPlan.setStatus(PlanStatus.PUBLISHED);
+        Set<String> originalPlanTags = new HashSet<>();
+        originalPlanTags.add("public");
+        originalPlan.setTags(originalPlanTags);
+        when(planService.findByApi(any(), eq(API_ID))).thenReturn(Set.of(originalPlan));
+        api.setDefinition(
+                "{\"id\": \"" + API_ID + "\", \"gravitee\": \"2.0.0\", \"tags\": [\"public\"], \"name\": \"" + API_NAME + "\",\"proxy\": {\"context_path\": \"/old\"}}"
+        );
+
+        ApiEntity result = apiService.update(GraviteeContext.getExecutionContext(), API_ID, updateApiEntity, false);
+        PlanEntity resultPlan = result.getPlans().stream().toList().get(0);
+        assertEquals(Set.of("public"), resultPlan.getTags());
+
+        verify(apiRepository, times(1)).update(any());
+        verify(planService, never()).createOrUpdatePlan(any(), any());
     }
 
     private void assertUpdate(

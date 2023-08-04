@@ -1037,6 +1037,35 @@ public class ApiServiceImpl extends AbstractService implements ApiService {
                 updateApiEntity.setPaths(singletonMap("/", new ArrayList<>()));
             }
 
+            if (updatePlansAndFlows && updateApiEntity.getTags() != null && !apiToCheck.getTags().isEmpty()
+                    && !updateApiEntity.getTags().containsAll(apiToCheck.getTags())
+            ) {
+                    Map<String, PlanEntity> plans = new HashMap<>();
+                    apiToCheck.getPlans().forEach(plan -> {
+                        if (!updateApiEntity.getTags().containsAll(plan.getTags())) {
+                            plans.put(plan.getId(), plan);
+                        }
+                    });
+                    if (updateApiEntity.getPlans() != null) {
+                        // Overwrite existing plans in map
+                        updateApiEntity.getPlans().forEach(plan -> {
+                            if (!updateApiEntity.getTags().containsAll(plan.getTags())) {
+                                plans.put(plan.getId(), plan);
+                            }
+                        });
+                    }
+                    var allowedTags = updateApiEntity.getTags();
+                    plans.forEach((id, planEntity) -> {
+                        if (planEntity.getTags() != null) {
+                            var cleanedPlanTags = planEntity.getTags();
+                            cleanedPlanTags.retainAll(allowedTags);
+                            planEntity.setTags(cleanedPlanTags);
+                        }
+                    });
+                    updateApiEntity.setPlans(new HashSet<>(plans.values()));
+
+            }
+
             if (updateApiEntity.getPlans() == null) {
                 updateApiEntity.setPlans(new HashSet<>());
             } else if (checkPlans) {
@@ -1052,7 +1081,6 @@ public class ApiServiceImpl extends AbstractService implements ApiService {
                         if (
                             !planStatuses.containsKey(planToUpdate.getId()) ||
                             (
-                                planStatuses.containsKey(planToUpdate.getId()) &&
                                 planStatuses.get(planToUpdate.getId()) == PlanStatus.CLOSED &&
                                 planStatuses.get(planToUpdate.getId()) != planToUpdate.getStatus()
                             )

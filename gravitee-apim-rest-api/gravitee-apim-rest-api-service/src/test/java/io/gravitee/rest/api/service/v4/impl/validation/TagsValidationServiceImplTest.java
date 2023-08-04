@@ -122,15 +122,22 @@ public class TagsValidationServiceImplTest {
     }
 
     @Test
-    public void shouldAcceptPlanTagsWithAtLeastOneApiTag() throws Exception {
-        tagsValidationService.validatePlanTagsAgainstApiTags(
-            Set.of("planTag1", "apiTag1"),
-            mockApi(DefinitionVersion.V4, Set.of("apiTag1", "apiTag2"))
-        );
-        tagsValidationService.validatePlanTagsAgainstApiTags(
-            Set.of("planTag1", "apiTag1"),
-            mockApi(DefinitionVersion.V2, Set.of("apiTag1", "apiTag2"))
-        );
+    public void shouldNotAcceptPlanTagsWithAtLeastOneApiTag() {
+        assertThatExceptionOfType(TagNotAllowedException.class)
+                .isThrownBy(() ->
+                        tagsValidationService.validatePlanTagsAgainstApiTags(
+                                Set.of("planTag1", "apiTag1"),
+                                mockApi(DefinitionVersion.V4, Set.of("apiTag1", "apiTag2"))
+                        )
+                );
+
+        assertThatExceptionOfType(TagNotAllowedException.class)
+                .isThrownBy(() ->
+                        tagsValidationService.validatePlanTagsAgainstApiTags(
+                                Set.of("planTag1", "apiTag1"),
+                                mockApi(DefinitionVersion.V2, Set.of("apiTag1", "apiTag2"))
+                        )
+                );
     }
 
     @Test
