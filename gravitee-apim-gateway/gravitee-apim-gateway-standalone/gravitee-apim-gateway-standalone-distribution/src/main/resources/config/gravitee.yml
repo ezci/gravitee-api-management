@@ -17,6 +17,21 @@ secrets:
   kubernetes:
     enabled: false
     # kubeConfigFile: /opt/gravitee/config/kube-config.json
+  aws:
+    enabled: false
+    region: eu-north-1
+    # connectionTimeoutMs: 5000
+    # fipsEnabled: false
+    auth:
+      provider: static # one of "static", "chain"
+    ### static
+      config:
+        accessKeyId:
+        secretAccessKey:
+    ### chain
+        # no config required
+        # see https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-chain.html
+
   vault:
     enabled: false
     host: 127.0.0.1
@@ -477,7 +492,7 @@ services:
 # Referenced properties
 ds:
   mongodb:
-    dbname: secret://vault/secret/gravitee/mongo/dbname
+    dbname: gravitee
     host: localhost
     port: 27017
   elastic:
