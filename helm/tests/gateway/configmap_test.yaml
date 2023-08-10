@@ -1,0 +1,58 @@
+suite: Test Gateway default configmap
+templates:
+  - "gateway/gateway-configmap.yaml"
+tests:
+  - it: Check DB Less mode and hazelcast ratelimit
+    template: gateway/gateway-configmap.yaml
+    chart:
+      version: 1.0.0-chart
+      appVersion: 1.0.0-app
+    set:
+      global:
+        kubeVersion: 1.23.0
+      apim:
+        dbLess: true
+      ratelimit:
+        type:
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: ConfigMap
+      - isAPIVersion:
+          of: v1
+      - matchRegex:
+          path: data.[gravitee.yml]
+          pattern: |
+            ratelimit:
+              type: hazelcast
+
+  - it: Check DB Less mode with custom ratelimit repository
+    template: gateway/gateway-configmap.yaml
+    chart:
+      version: 1.0.0-chart
+      appVersion: 1.0.0-app
+    set:
+      global:
+        kubeVersion: 1.23.0
+      apim:
+        dbLess: true
+      ratelimit:
+        type: redis
+      gateway:
+        ratelimit:
+          redis:
+            host: localhost
+            port: 443
+    asserts:
+      - hasDocuments:
+          count: 1
+      - isKind:
+          of: ConfigMap
+      - isAPIVersion:
+          of: v1
+      - matchRegex:
+          path: data.[gravitee.yml]
+          pattern: |
+            ratelimit:
+              type: redis

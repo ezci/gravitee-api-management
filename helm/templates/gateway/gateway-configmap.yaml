@@ -160,7 +160,7 @@ data:
       {{- end }}
 
     ratelimit:
-      {{- if .Values.apim.dbLess }}
+      {{- if and (.Values.apim.dbLess) (not .Values.ratelimit.type) }}
       type: {{ "hazelcast" }}
       {{- else }}
       type: {{ .Values.ratelimit.type | default "mongodb" }}
