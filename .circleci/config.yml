@@ -1455,7 +1455,16 @@ jobs:
                       then
                         APIM_REGISTRY=graviteeio.azurecr.io APIM_TAG=$TAG APIM_CLIENT_TAG=$TAG npm run test:api:<< parameters.database >>
                       else 
-                        APIM_REGISTRY=graviteeio.azurecr.io APIM_TAG=$TAG APIM_CLIENT_TAG=<< parameters.apim_client_tag >> npm run test:api:<< parameters.database >>
+                        if [[ "<< parameters.apim_client_tag >>" == *"@"* ]]
+                        then
+                          echo "Using custom registry for client"
+                          REGISTRY=$(echo "<< parameters.apim_client_tag >>" | cut -f1 -d@)
+                          CLIENT_TAG=$(echo "<< parameters.apim_client_tag >>" | cut -f2 -d@)
+                          APIM_REGISTRY=${REGISTRY} APIM_TAG=${TAG} APIM_CLIENT_TAG=${CLIENT_TAG} npm run test:api:<< parameters.database >>
+                        else
+                          echo "Using ACR registry for client"
+                          APIM_REGISTRY=graviteeio.azurecr.io APIM_TAG=$TAG APIM_CLIENT_TAG=<< parameters.apim_client_tag >> npm run test:api:<< parameters.database >>
+                        fi
                       fi
             - cmd-docker-azure-logout
             - when:
@@ -2345,7 +2354,7 @@ workflows:
                       parameters:
                           execution_mode: ["v3", "jupiter"]
                           database: ["bridge"]
-                          apim_client_tag: ["3.18.x-latest"]
+                          apim_client_tag: ["graviteeio@3.18"]
 
     publish_docker_images:
         when:
