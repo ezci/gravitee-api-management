@@ -72,6 +72,7 @@ class TestComponent {
   plan?: Plan;
 }
 
+// TODO: Copy this!
 const fakeApiKeySchema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   type: 'object',
