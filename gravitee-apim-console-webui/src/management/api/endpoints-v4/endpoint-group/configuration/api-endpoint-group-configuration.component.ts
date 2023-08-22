@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { GioJsonSchema } from '@gravitee/ui-particles-angular';
@@ -25,26 +25,44 @@ import { ConnectorPluginsV2Service } from '../../../../../services-ngx/connector
   selector: 'api-endpoint-group-configuration',
   template: require('./api-endpoint-group-configuration.component.html'),
 })
-export class ApiEndpointGroupConfigurationComponent implements OnInit, OnDestroy {
+export class ApiEndpointGroupConfigurationComponent implements OnInit, OnChanges, OnDestroy {
   private unsubscribe$: Subject<boolean> = new Subject<boolean>();
 
   @Input() configurationForm: FormGroup;
 
   @Input() endpointGroupType: string;
 
+  @Input() schema: GioJsonSchema;
+
   public sharedConfigurationSchema: GioJsonSchema;
 
   constructor(private readonly connectorPluginsV2Service: ConnectorPluginsV2Service) {}
 
   ngOnInit(): void {
+    if (!this.endpointGroupType) {
+      return;
+    }
+    if (this.endpointGroupType === 'mock') {
+      // Remove control so that form is valid
+      this.configurationForm.removeControl('groupConfiguration');
+      this.sharedConfigurationSchema = undefined;
+    }
     this.connectorPluginsV2Service
       .getEndpointPluginSharedConfigurationSchema(this.endpointGroupType)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe({
-        next: (sharedConfigSchema) => {
-          this.sharedConfigurationSchema = sharedConfigSchema;
+        next: (schema) => {
+          this.sharedConfigurationSchema = schema;
+          // Reinitialize control
+          this.configurationForm.setControl('groupConfiguration', new FormControl({}));
         },
       });
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.endpointGroupType) {
+      this.ngOnInit();
+    }
   }
 
   ngOnDestroy(): void {

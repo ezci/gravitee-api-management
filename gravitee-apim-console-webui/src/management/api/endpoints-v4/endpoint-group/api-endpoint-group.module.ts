@@ -20,6 +20,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { UIRouterModule } from '@uirouter/angular';
 import {
+  GioBannerModule,
   GioFormFocusInvalidModule,
   GioFormJsonSchemaModule,
   GioFormSlideToggleModule,
@@ -33,16 +34,29 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatRadioModule } from '@angular/material/radio';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { ApiEndpointGroupComponent } from './api-endpoint-group.component';
 import { ApiEndpointGroupGeneralComponent } from './general/api-endpoint-group-general.component';
 import { ApiEndpointGroupConfigurationComponent } from './configuration/api-endpoint-group-configuration.component';
+import { ApiEndpointGroupSelectionComponent } from './create/endpoint-group-selection/api-endpoint-group-selection.component';
+import { ApiEndpointGroupCreateComponent } from './create/api-endpoint-group-create.component';
 
 import { GioGoBackButtonModule } from '../../../../shared/components/gio-go-back-button/gio-go-back-button.module';
 import { GioPermissionModule } from '../../../../shared/components/gio-permission/gio-permission.module';
+import { GioConnectorListModule } from '../../../../shared/components/gio-connector-list-option/gio-connector-list.module';
 
 @NgModule({
-  declarations: [ApiEndpointGroupComponent, ApiEndpointGroupGeneralComponent, ApiEndpointGroupConfigurationComponent],
+  declarations: [
+    ApiEndpointGroupComponent,
+    ApiEndpointGroupGeneralComponent,
+    ApiEndpointGroupConfigurationComponent,
+    ApiEndpointGroupCreateComponent,
+    ApiEndpointGroupSelectionComponent,
+  ],
   exports: [ApiEndpointGroupComponent],
   imports: [
     CommonModule,
@@ -63,6 +77,12 @@ import { GioPermissionModule } from '../../../../shared/components/gio-permissio
     GioSaveBarModule,
     MatOptionModule,
     MatSelectModule,
+    MatStepperModule,
+    MatRadioModule,
+    MatProgressBarModule,
+    GioConnectorListModule,
+    MatTooltipModule,
+    GioBannerModule,
   ],
 })
 export class ApiEndpointGroupModule {}

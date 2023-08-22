@@ -75,6 +75,7 @@ import { ApiV1ResourcesComponent } from './proxy/resources-v1/resources.componen
 import { ApiV1PoliciesComponent } from './design/policies/policies.component';
 import { ApiEventsComponent } from './audit/events/api-events.component';
 import { ApiEndpointGroupComponent } from './endpoints-v4/endpoint-group/api-endpoint-group.component';
+import { ApiEndpointGroupCreateComponent } from './endpoints-v4/endpoint-group/create/api-endpoint-group-create.component';
 
 import { NotificationsComponent } from '../../components/notifications/notifications.component';
 import { Scope } from '../../entities/scope';
@@ -1395,6 +1396,20 @@ const states: Ng2StateDeclaration[] = [
     name: 'management.apis.ng.endpoint-edit',
     url: '/endpoints/groups/:groupIndex/endpoints/:endpointIndex',
     component: ApiEndpointComponent,
+    data: {
+      useAngularMaterial: true,
+      apiPermissions: {
+        only: ['api-definition-u'],
+      },
+      docs: {
+        page: 'management-api-proxy-endpoints',
+      },
+    },
+  },
+  {
+    name: 'management.apis.ng.endpoints-new',
+    url: '/endpoints/groups/new',
+    component: ApiEndpointGroupCreateComponent,
     data: {
       useAngularMaterial: true,
       apiPermissions: {

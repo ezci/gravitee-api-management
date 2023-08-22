@@ -16,6 +16,11 @@
 
 -->
 <ng-container *ngIf="groupsTableData">
+  <div class="endpoints-group__header" *gioPermission="{ anyOf: ['api-definition-u'] }">
+    <button mat-flat-button color="primary" aria-label="Add endpoint group" (click)="addEndpointGroup()">
+      <mat-icon svgIcon="gio:plus"></mat-icon>Add endpoint group
+    </button>
+  </div>
   <ng-container *ngFor="let group of groupsTableData; let i = index">
     <mat-card class="endpoint-group-card">
       <div class="endpoint-group-card__header">
@@ -154,12 +159,3 @@
     </mat-card>
   </ng-container>
 </ng-container>
-<button
-  *gioPermission="{ anyOf: ['api-definition-u'] }"
-  mat-flat-button
-  color="primary"
-  aria-label="Add endpoint group"
-  (click)="addEndpointGroup()"
->
-  Add endpoint group
-</button>

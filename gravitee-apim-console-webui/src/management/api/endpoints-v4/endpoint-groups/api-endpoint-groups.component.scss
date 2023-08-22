@@ -86,3 +86,11 @@
     width: 30%;
   }
 }
+
+.endpoints-group {
+  &__header {
+    display: flex;
+    padding-bottom: 24px;
+    justify-content: flex-end;
+  }
+}
