@@ -15,42 +15,46 @@
     limitations under the License.
 
 -->
-<form [formGroup]="createForm" (submit)="createEndpointGroup()">
-  <mat-stepper [linear]="true" #stepper>
-    <mat-step state="type" [stepControl]="createForm.get('type')">
-      <ng-template matStepperIcon="type">
-        <mat-icon svgIcon="gio:edit-pencil"></mat-icon>
-      </ng-template>
-      <ng-template matStepLabel>Endpoint Group Type</ng-template>
-      <api-endpoints-group-selection [endpointGroupTypeForm]="endpointGroupTypeForm"></api-endpoints-group-selection>
-      <div class="api-endpoint-group-create__footer">
-        <button mat-stroked-button type="button" (click)="goBackToEndpointGroups()">Exit</button>
-        <button mat-raised-button type="button" color="primary" [disabled]="createForm.get('type').invalid" matStepperNext>
-          Select endpoint group type
-        </button>
-      </div>
-    </mat-step>
+<form *ngIf="createForm" [formGroup]="createForm" (submit)="createEndpointGroup()">
+  <mat-card>
+    <mat-stepper [linear]="true" #stepper>
+      <mat-step state="type" [stepControl]="createForm.get('type')">
+        <ng-template matStepperIcon="type">
+          <mat-icon svgIcon="gio:edit-pencil"></mat-icon>
+        </ng-template>
+        <ng-template matStepLabel>Endpoint Group Type</ng-template>
+        <api-endpoints-group-selection [endpointGroupTypeForm]="endpointGroupTypeForm"></api-endpoints-group-selection>
+        <div class="api-endpoint-group-create__footer">
+          <button mat-stroked-button type="button" (click)="goBackToEndpointGroups()">Exit</button>
+          <button mat-raised-button type="button" color="primary" [disabled]="createForm.get('type').invalid" matStepperNext>
+            Select endpoint group type
+          </button>
+        </div>
+      </mat-step>
 
-    <mat-step state="general" [stepControl]="createForm.get('general')">
-      <ng-template matStepperIcon="general">
-        <mat-icon svgIcon="gio:edit-pencil"></mat-icon>
-      </ng-template>
-      <ng-template matStepLabel>General</ng-template>
-      <api-endpoint-group-general [generalForm]="generalForm"></api-endpoint-group-general>
-      <div class="api-endpoint-group-create__footer">
-        <button mat-stroked-button type="button" matStepperPrevious>Back</button>
-        <button mat-raised-button type="button" color="primary" [disabled]="createForm.get('general').invalid" matStepperNext>
-          Validate general information
-        </button>
-      </div>
-    </mat-step>
+      <mat-step state="general" [stepControl]="createForm.get('general')">
+        <ng-template matStepperIcon="general">
+          <mat-icon svgIcon="gio:edit-pencil"></mat-icon>
+        </ng-template>
+        <ng-template matStepLabel>General</ng-template>
+        <api-endpoint-group-general [generalForm]="generalForm"></api-endpoint-group-general>
+        <div class="api-endpoint-group-create__footer">
+          <button mat-stroked-button type="button" matStepperPrevious>Back</button>
+          <button mat-raised-button type="button" color="primary" [disabled]="createForm.get('general').invalid" matStepperNext>
+            Validate general information
+          </button>
+        </div>
+      </mat-step>
 
-    <mat-step state="configuration" [stepControl]="createForm.get('configuration')">
-      <ng-template matStepperIcon="configuration">
-        <mat-icon svgIcon="gio:edit-pencil"></mat-icon>
-      </ng-template>
-      <ng-template matStepLabel>Configuration</ng-template>
-      <ng-template matStepContent>
+      <mat-step state="configuration" [stepControl]="createForm.get('configuration')">
+        <ng-template matStepperIcon="configuration">
+          <mat-icon svgIcon="gio:edit-pencil"></mat-icon>
+        </ng-template>
+        <ng-template matStepLabel>Configuration</ng-template>
+        <gio-banner-info *ngIf="endpointGroupTypeForm.get('endpointGroupType').value !== 'mock'">
+          Inherited configuration
+          <span gioBannerBody>Endpoints associated to this endpoint group will automatically inherit its configuration.</span>
+        </gio-banner-info>
         <api-endpoint-group-configuration
           [configurationForm]="configurationForm"
           [endpointGroupType]="endpointGroupTypeForm.get('endpointGroupType').value"
@@ -61,7 +65,7 @@
             Create endpoint group
           </button>
         </div>
-      </ng-template>
-    </mat-step>
-  </mat-stepper>
+      </mat-step>
+    </mat-stepper>
+  </mat-card>
 </form>

@@ -1377,7 +1377,20 @@ const states: Ng2StateDeclaration[] = [
       },
     },
   },
-
+  {
+    name: 'management.apis.ng.endpoint-group-new',
+    url: '/endpoints/groups/new',
+    component: ApiEndpointGroupCreateComponent,
+    data: {
+      useAngularMaterial: true,
+      apiPermissions: {
+        only: ['api-definition-u'],
+      },
+      docs: {
+        page: 'management-api-proxy-endpoints',
+      },
+    },
+  },
   {
     name: 'management.apis.ng.endpoint-new',
     url: '/endpoints/groups/:groupIndex/endpoints/new',
@@ -1396,20 +1409,6 @@ const states: Ng2StateDeclaration[] = [
     name: 'management.apis.ng.endpoint-edit',
     url: '/endpoints/groups/:groupIndex/endpoints/:endpointIndex',
     component: ApiEndpointComponent,
-    data: {
-      useAngularMaterial: true,
-      apiPermissions: {
-        only: ['api-definition-u'],
-      },
-      docs: {
-        page: 'management-api-proxy-endpoints',
-      },
-    },
-  },
-  {
-    name: 'management.apis.ng.endpoints-new',
-    url: '/endpoints/groups/new',
-    component: ApiEndpointGroupCreateComponent,
     data: {
       useAngularMaterial: true,
       apiPermissions: {

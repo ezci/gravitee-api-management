@@ -42,7 +42,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ApiEndpointGroupComponent } from './api-endpoint-group.component';
 import { ApiEndpointGroupGeneralComponent } from './general/api-endpoint-group-general.component';
 import { ApiEndpointGroupConfigurationComponent } from './configuration/api-endpoint-group-configuration.component';
-import { ApiEndpointGroupSelectionComponent } from './create/endpoint-group-selection/api-endpoint-group-selection.component';
+import { ApiEndpointGroupSelectionComponent } from './selection/api-endpoint-group-selection.component';
 import { ApiEndpointGroupCreateComponent } from './create/api-endpoint-group-create.component';
 
 import { GioGoBackButtonModule } from '../../../../shared/components/gio-go-back-button/gio-go-back-button.module';

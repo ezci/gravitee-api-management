@@ -42,11 +42,14 @@ export class ApiEndpointGroupConfigurationComponent implements OnInit, OnChanges
     if (!this.endpointGroupType) {
       return;
     }
+
     if (this.endpointGroupType === 'mock') {
       // Remove control so that form is valid
       this.configurationForm.removeControl('groupConfiguration');
       this.sharedConfigurationSchema = undefined;
+      return;
     }
+
     this.connectorPluginsV2Service
       .getEndpointPluginSharedConfigurationSchema(this.endpointGroupType)
       .pipe(takeUntil(this.unsubscribe$))
@@ -54,7 +57,9 @@ export class ApiEndpointGroupConfigurationComponent implements OnInit, OnChanges
         next: (schema) => {
           this.sharedConfigurationSchema = schema;
           // Reinitialize control
-          this.configurationForm.setControl('groupConfiguration', new FormControl({}));
+          if (this.sharedConfigurationSchema && !this.configurationForm.get('groupConfiguration')) {
+            this.configurationForm.setControl('groupConfiguration', new FormControl({}));
+          }
         },
       });
   }

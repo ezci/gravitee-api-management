@@ -15,10 +15,8 @@
     limitations under the License.
 
 -->
-<div class="api-creation-v4__step__header">
-  <p class="api-creation-v4__step__header__paragraph-light">
-    Choose the type of event-brokers/backend that will be exposed through the API
-  </p>
+<div class="endpoint-group-type__header">
+  <p>Choose the type of event-brokers/backend that will be exposed through the API.</p>
 </div>
 <form *ngIf="endpointGroupTypeForm" [formGroup]="endpointGroupTypeForm">
   <mat-radio-group
@@ -35,11 +33,12 @@
     >
       <gio-connector-list-option-layout>
         <gio-connector-list-option-layout-title>
-          <mat-icon class="api-creation-v4__icon" [svgIcon]="endpoint.icon"></mat-icon>
-          {{ endpoint.name }}
-          <span class="gio-badge-primary api-creation-v4__badge">New</span>
-          <span class="gio-badge-accent api-creation-v4__badge" *ngIf="endpoint.isEnterprise">Enterprise</span>
-          <span class="gio-badge-warning api-creation-v4__badge" *ngIf="!endpoint.deployed">Not deployed</span>
+          <div class="endpoint-group-type__endpoint__title">
+            <mat-icon [svgIcon]="endpoint.icon"></mat-icon>
+            {{ endpoint.name }}
+            <span class="gio-badge-primary">New</span>
+            <span class="gio-badge-warning" *ngIf="!endpoint.deployed">Not deployed</span>
+          </div>
         </gio-connector-list-option-layout-title>
 
         <gio-connector-list-option-layout-body>

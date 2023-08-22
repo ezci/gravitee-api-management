@@ -180,7 +180,7 @@ export class ApiNgV4MenuService implements ApiMenuService {
           'management.apis.ng.endpoint-groups',
           'management.apis.ng.endpoint',
           'management.apis.ng.endpoint-group',
-          'management.apis.ng.endpoints-new',
+          'management.apis.ng.endpoint-group-new',
         ],
       });
     }

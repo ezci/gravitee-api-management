@@ -20,7 +20,9 @@
     Mock endpoint group
     <span gioBannerBody>Configuration is disabled for Mock endpoint groups.</span>
   </gio-banner-info>
-  <mat-card *ngIf="sharedConfigurationSchema">
-    <gio-form-json-schema formControlName="groupConfiguration" [jsonSchema]="sharedConfigurationSchema"></gio-form-json-schema>
-  </mat-card>
+  <gio-form-json-schema
+    *ngIf="sharedConfigurationSchema"
+    formControlName="groupConfiguration"
+    [jsonSchema]="sharedConfigurationSchema"
+  ></gio-form-json-schema>
 </form>

@@ -19,13 +19,13 @@ import { of, Subject } from 'rxjs';
 import { FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 
-import { ConnectorVM } from '../../../../creation-v4/models/ConnectorVM';
-import { ConnectorPluginsV2Service } from '../../../../../../services-ngx/connector-plugins-v2.service';
-import { IconService } from '../../../../../../services-ngx/icon.service';
+import { ConnectorVM } from '../../../creation-v4/models/ConnectorVM';
+import { ConnectorPluginsV2Service } from '../../../../../services-ngx/connector-plugins-v2.service';
+import { IconService } from '../../../../../services-ngx/icon.service';
 import {
   GioConnectorDialogComponent,
   GioConnectorDialogData,
-} from '../../../../../../components/gio-connector-dialog/gio-connector-dialog.component';
+} from '../../../../../components/gio-connector-dialog/gio-connector-dialog.component';
 
 @Component({
   selector: 'api-endpoints-group-selection',
